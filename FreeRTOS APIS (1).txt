@@ -1,0 +1,75 @@
+													Semaphores
+1- define the semaphore:
+	xSemaphoreHandle 	LCDSem;
+	
+2- Create a binary semaphore:
+	vSemaphoreCreateBinary(xSemaphoreHandle_t	SemaphoreName);
+	i.e: vSemaphoreCreateBinary(LCDSem);
+	
+3- xSemaphoreHandle_t xSemaphoreCreateCounting(BaseType_t uxMaxCount, uBaseType_t uxInitialCount);
+	return: Handle to the semaphore if succeeded, NULL if not
+	i.e: LCDSem = xSemaphoreCreateCounting(2,2);
+	 if(LCDSem != NULL)
+	 {
+		//semaphore is successfully created
+	 }
+	 
+4- Pend(Take) semaphore:
+	BaseType_t xSemaphoreTake(xSemaphoreHandle_t xSemaphore, TickType_t xTicksToWait);
+	return: 1- pdPASS: semaphore is succesfully taken
+			2- pdFAIL: couldn't take semaphore because current value is 0
+	i.e: u8 SemaphoreState= xSemaphoreTake(LCDSem,10);
+		if(SemaphoreState== pdPASS)
+		{
+			/*write on lcd*/
+			/*Give the semaphore*/
+		}
+		else
+		{
+			/**/
+		}
+		
+			
+5- Give(Post) semaphore:
+	BaseType_t xSemaphoreGive(xSemaphoreHandle_t xSemaphore);
+	same return: pdPASS if giving is succesfull
+				or pdFAIL if giving comes after the max count of the semaphore
+				
+========================================================================================================================
+													Queues
+
+1- Defining the queue
+	xQueueHandle Buffer;
+	
+2- Create the queue
+	xQueueCreate(Length , ItemSize);
+	return: NULL: if no memory available
+	anyother value: handle to the queue
+	i.e: Buffer= xQueueCreate(6,sizeof(u8));
+	
+3- Sending to the queue:
+	xQueueSend(xQueue, *pvItem, xTicksToWait);
+	return: pdPASS: if data is successfully sent
+			errQUEUE_FULL	: if queue is full
+	i.e: ret= xQueueSend(Buffer, &Val, 0);
+	
+4- Receive(Read) from Queue
+	xQueueReceive(xQueue, *pvItem, xTicksToWait);
+	
+==========================================================================================================================
+													MailBox
+													
+1- Defining the mailbox:
+	same as queue
+	i.e: xQueueHandle MailBox;
+	
+2- Create:
+	xQueueCreate(1 , ItemSize);
+	
+3- Send:
+	xQueueOverWrite(xQueue, void*pvItem);
+	
+4- Receive:
+	xQueuePeek(xQueue, void*pvItem, xTicksToWait);
+	
+	
